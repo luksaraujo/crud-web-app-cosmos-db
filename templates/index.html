@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio Azurezando Express - 1ª Edição</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="shortcut icon" href="{{url_for('static', filename='logo.png')}}">
+</head>
+
+<body>
+    {% block body %}
+    <div class="container">
+        <div class="well text-center">
+            <h1>CRUD Simples em Python - Desafio Azurezando Express</h1>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col md-12">
+                    <h2>
+                        Lista de Estabelecimentos
+                        <button type="button" class="btn btn-success pull-right" data-toggle="modal"
+                            data-target="#mymodal">Adicionar Estabelecimento</button>
+                    </h2>
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissable" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                            <span aria-hidden="true">X</span>
+                        </button>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                    <table class="table table-striped">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>CNPJ</th>
+                            <th>Ação</th>
+                        </tr>
+                        {% for row in stores %}
+                        <tr>
+                            <td>{{row.id}}</td>
+                            <td>{{row.name}}</td>
+                            <td>{{row.cnpj}}</td>
+                            <td>
+                                <a href="/update/{{row.id}}" class="btn btn-warning btn-xs" data-toggle="modal"
+                                    data-target="#modaledit{{row.id}}">Editar</a>
+                                <a href="/delete/{{row.id}}/{{row.cnpj}}" class="btn btn-danger btn-xs"
+                                    onclick="return confirm('Tem certeza que deseja deletar este estabelecimento?')">Deletar</a>
+                            </td>
+                        </tr>
+                        <div id="modaledit{{row.id}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Por favor, atualize os dados</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{url_for('update')}}" method="POST">
+                                            <div class="form-group">
+                                                <label>Nome</label>
+                                                <input type="hidden" name="id" value="{{row.id}}">
+                                                <input type="text" class="form-control" name="name" required="1" value="{{row.name}}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>CNPJ</label>
+                                                <input type="text" class="form-control" name="cnpj" required="1" value="{{row.cnpj}}">
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary">Atualizar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div id="mymodal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Por favor, insira os dados</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{url_for('create')}}" method="POST">
+                                <div class="form-group">
+                                    <label>Nome</label>
+                                    <input type="text" class="form-control" name="name" required="1">
+                                </div>
+                                <div class="form-group">
+                                    <label>CNPJ</label>
+                                    <input type="text" class="form-control" name="cnpj" required="1">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+        <div class="well">
+            <h3>
+                Azurezando
+                <span class="pull-right">Desafio Azurezando Express</span>
+            </h3>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="{{url_for('static', filename='js/jquery-3.2.1.min.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+</body>
+
+</html>
